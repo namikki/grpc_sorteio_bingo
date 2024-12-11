@@ -6,6 +6,27 @@ A aplicação consiste em um servidor gRPC que fornece números sorteados e um c
 
 ---
 
+## Pré-requisitos
+
+Certifique-se de ter os seguintes pacotes instalados em seu ambiente Python:
+
+- **gRPC** e ferramentas relacionadas:
+  - `grpcio`
+  - `grpcio-tools`
+- **Flask** e Socket.IO:
+  - `flask`
+  - `flask-socketio`
+
+### Instalação dos Pacotes
+
+Você pode instalar os pacotes necessários usando o seguinte comando:
+
+```bash
+pip install grpcio grpcio-tools flask flask-socketio
+```
+
+---
+
 ## Arquivo `sorteio.proto`
 
 ### Descrição
