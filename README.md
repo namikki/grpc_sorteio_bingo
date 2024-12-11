@@ -4,10 +4,11 @@
 
 A aplicação consiste em um servidor gRPC que fornece números sorteados e um cliente web que interage com o servidor. A comunicação é feita usando **gRPC** e o cliente utiliza **Flask** e **Flask-SocketIO** para uma interface web interativa.
 
+---
+
 <div align="center">
     <img src="img\sorteio_bingo.gif" alt="Descrição do GIF" />
 </div>
----
 
 ## Pré-requisitos
 
