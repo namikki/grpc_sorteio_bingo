@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+service SorteioService {
+  rpc IniciarSorteio(Empty) returns (stream NumeroSorteado);
+}
+
+message NumeroSorteado {
+  int32 numero = 1;
+}
+
+message Empty {}
