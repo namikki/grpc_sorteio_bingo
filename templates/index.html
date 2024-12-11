@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteio Bingo</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
+    </style>
+</head>
+<body>
+    <h1>Sorteio Bingo</h1>
+
+        <div id="mensagemFinal" class="mensagem-final">
+            <p id="mensagemTexto" class="mensagem-texto"></p>
+            <div class="botao-container-mensagem">
+                <button onclick="jogarNovamente()">Jogar Novamente</button>
+                <button onclick="fecharMensagem()">Fechar</button>
+            </div>
+        </div>
+        
+    <div class="layout-container">
+        <div class="cartela">
+            <h3>Sua Cartela</h3>
+            <div id="cartela" class="numeros-grid"></div>
+        </div>
+    
+        <div class="numeros">
+            <h3>Números Sorteados</h3>
+            <div id="numeros" class="numeros-grid"></div>
+        </div>
+    </div>
+
+        <div class="botao-container">
+            <button onclick="novaCartela()">Nova Cartela</button>
+            <button onclick="iniciarSorteio()">Sortear</button>
+        </div>
+
+    <script>
+        const socket = io();
+
+        function novaCartela() {
+            fetch('/nova_cartela')
+                .then(response => response.json())
+                .then(data => {
+                    const cartelaDiv = document.getElementById('cartela');
+                    cartelaDiv.innerHTML = data.cartela.map(num => 
+                        `<span class="numero-cartela">${num}</span>`
+                    ).join('');
+                });
+        }
+
+        function iniciarSorteio() {
+            fetch('/iniciar_sorteio');
+        }
+
+        function jogarNovamente() {
+            fetch('/reiniciar_jogo');
+            document.getElementById('numeros').innerHTML = '';
+            const mensagemFinal = document.getElementById('mensagemFinal');
+            mensagemFinal.style.display = 'none';
+        }
+
+        function fecharMensagem() {
+            const mensagemFinal = document.getElementById('mensagemFinal');
+            mensagemFinal.style.display = 'none';
+        }
+
+        socket.on('fim_sorteio', data => {
+            const mensagemFinal = document.getElementById('mensagemFinal');
+            const mensagemTexto = document.getElementById('mensagemTexto');
+
+            mensagemTexto.textContent = data.mensagem;
+            mensagemFinal.style.display = 'flex';
+        });
+
+
+
+        socket.on('novo_numero', data => {
+            const numerosDiv = document.getElementById('numeros');
+            const cartelaSpans = document.getElementById('cartela').querySelectorAll('span');
+
+            const numeroEl = document.createElement('span');
+            numeroEl.textContent = data.numero;
+
+            numeroEl.classList.add('numero-sorteado');
+
+            if (data.bingo) {
+                numeroEl.classList.add('match');
+            }
+
+            numerosDiv.appendChild(numeroEl);
+
+            cartelaSpans.forEach(span => {
+                if (parseInt(span.textContent) === data.numero) {
+                    span.classList.add('match');
+                }
+            });
+        });
+
+        socket.on('reiniciar_jogo', () => {
+            const cartelaDiv = document.getElementById('cartela');
+            cartelaDiv.innerHTML = '';
+        });
+    </script>
+</body>
+</html>
